@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_DSN: "root:@tcp(mysql:3306)/demo_db?charset=utf8mb4&parseTime=True&loc=Local"
+    ports:
+      - "8080:8080"
+    networks:
+      - intranet
+  mysql:
+    image: mysql:8.0.32
+    volumes:
+      - "./data.sql:/docker-entrypoint-initdb.d/data.sql"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: "demo_db"
+    networks:
+      - intranet
+networks:
+  intranet:
